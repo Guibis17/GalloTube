@@ -14,33 +14,23 @@ public class Video
     [StringLength(100, ErrorMessage = "O nome deve possuir no máximo 100 caracteres")]
     public string Name { get; set; }
 
-    [Display(Name = "Sinopse")]
-    [Required(ErrorMessage = "A Sinopse é obrigatória")]
-    [StringLength(8000, ErrorMessage = "A Sinopse deve possuir no máximo 5000 caracteres")]
-    public string Synopsis { get; set; }
-
-    [Column(TypeName = "Year")]
-    [Display(Name = "Ano de Estreia")]
-    [Required(ErrorMessage = "O Ano de Estreia é obrigatório")]
-    public Int16 MovieYear { get; set; }
+    [Display(Name = "Descrição")]
+    [Required(ErrorMessage = "A descrição é obrigatória")]
+    [StringLength(8000, ErrorMessage = "A descrição deve possuir no máximo 5000 caracteres")]
+    public string Description { get; set; }
 
     [Display(Name = "Duração (em minutos)")]
     [Required(ErrorMessage = "A Duração é obrigatória")]
     public Int16 Duration { get; set; }
 
-    [Display(Name = "Classificação Etária")]
-    [Required(ErrorMessage = "A Classificação Etária é obrigatória")]
-    public byte AgeRating { get; set; }
-
     [StringLength(200)]
     [Display(Name = "Foto")]
-    public string Image { get; set; }
+    public string Thumbnail { get; set; }
 
-    [NotMapped]
-    [Display(Name = "Duração")]
-    public string HourDuration { get {
-        return TimeSpan.FromMinutes(Duration) .ToString(@"%h'h 'mm'min'");
-    }}
+    [StringLength(200)]
+    [Display(Name = "Arquivo do vídeo")]
+    public string  videofile{ get; set; }
+
 
     public ICollection<VideoTag> Tag { get; set; }
 }
