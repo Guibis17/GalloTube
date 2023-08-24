@@ -102,42 +102,71 @@ public class VideoTagRepository : IVideoTagRepository
                 VideoId = reader.GetInt32("VideoId"),
                 TagId = reader.GetByte("TagId")
             };
-            movieGenres.Add(movieGenre);
+            videoTags.Add(videoTag);
         }
         connection.Close();
-        return movieGenres;
+        return videoTags;
     }
 
-    public List<Movie> ReadMoviesByGenre(byte GenreId)
+    public List<Video> ReadMoviesByGenre(byte TagId)
     {
         MySqlConnection connection = new(connectionString);
-        string sql = "select * from movie where id in "
-                   + "(select MovieId from moviegenre where GenreId = @GenreId)";
+        string sql = "select * from video where id in "
+                   + "(select VideoId from videotag where TagId = @TagId)";
         MySqlCommand command = new(sql, connection)
         {
             CommandType = CommandType.Text
         };
-        command.Parameters.AddWithValue("@GenreId", GenreId);
+        command.Parameters.AddWithValue("@TagId", TagId);
         
-        List<Movie> movies = new();
+        List<Video> videos = new();
         connection.Open();
         MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            Movie movie = new()
+            Video video = new()
             {
                 Id = reader.GetInt32("id"),
-                Title = reader.GetString("title"),
-                OriginalTitle = reader.GetString("originalTitle"),
-                Synopsis = reader.GetString("synopsis"),
-                MovieYear = reader.GetInt16("movieYear"),
+                Name = reader.GetString("Name"),
+                Description = reader.GetString("Description"),
+                UploadDate = reader.GetDateTime("UploadDate"),
                 Duration = reader.GetInt16("duration"),
-                AgeRating = reader.GetByte("ageRating"),
-                Image = reader.GetString("image")
+                Thumbnail = reader.GetString("thumbnail"),
+                videofile = reader.GetString("VideoFile")
             };
-            movies.Add(movie);
+            videos.Add(video);
         }
         connection.Close();
-        return movies;
+        return videos;
+    }
+
+    void IVideoTagRepository.Create(int VideoId, byte TagId)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IVideoTagRepository.Delete(int VideoId, byte TagId)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IVideoTagRepository.Delete(int VideoId)
+    {
+        throw new NotImplementedException();
+    }
+
+    List<VideoTag> IVideoTagRepository.ReadVideoTag()
+    {
+        throw new NotImplementedException();
+    }
+
+    List<Video> IVideoTagRepository.ReadMoviesByTag(byte TagId)
+    {
+        throw new NotImplementedException();
+    }
+
+    List<Tag> IVideoTagRepository.ReadTagsByVideo(int VideoId)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -2,7 +2,7 @@ using GalloTube.Models;
 
 namespace GalloTube.Interfaces;
 
-public interface IVideoRepository
+public interface IVideoTagRepository
 {
     void Create(int VideoId, byte TagId);
 
@@ -12,7 +12,7 @@ public interface IVideoRepository
 
     List<VideoTag> ReadVideoTag();
 
-    List<Video> ReadVideosByTag(byte TagId);
+    List<Video> ReadMoviesByTag(byte TagId);
 
     List<Tag> ReadTagsByVideo(int VideoId);
 }

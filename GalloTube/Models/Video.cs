@@ -31,6 +31,8 @@ public class Video
     [Display(Name = "Arquivo do vídeo")]
     public string  videofile{ get; set; }
 
+    public DateTime UploadDate { get; set; }
+
 
     public ICollection<VideoTag> Tag { get; set; }
 }
