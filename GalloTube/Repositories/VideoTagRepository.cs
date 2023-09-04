@@ -7,9 +7,9 @@ namespace GalloTube.Repositories;
 
 public class VideoTagRepository : IVideoTagRepository
 {
-    readonly string connectionString = "server=localhost;port=3306;database=GalloFlixdb;uid=root;pwd=''";
+    readonly string connectionString = "server=localhost;port=3306;database=GalloTubedb;uid=root;pwd=''";
 
-    public void Create(int VideoId, byte TagId)
+    public void Create(int VideoId, int TagId)
     {
         MySqlConnection connection = new(connectionString);
         string sql = "insert into VideoTag(VideoId, TagId) values (@VideoId, @TagId)";
@@ -25,7 +25,7 @@ public class VideoTagRepository : IVideoTagRepository
         connection.Close();
     }
 
-    public void Delete(int VideoId, byte TagId)
+    public void Delete(int VideoId, int TagId)
     {
         MySqlConnection connection = new(connectionString);
         string sql = "delete from VideoTag where VideoId = @VideoId and TagId = @TagId";
@@ -44,7 +44,7 @@ public class VideoTagRepository : IVideoTagRepository
     public void Delete(int VideoId)
     {
         MySqlConnection connection = new(connectionString);
-        string sql = "delete from VideoTag where TagId = @VideoId";
+        string sql = "delete from VideoTag where VideoId = @VideoId";
         MySqlCommand command = new(sql, connection)
         {
             CommandType = CommandType.Text
@@ -56,10 +56,10 @@ public class VideoTagRepository : IVideoTagRepository
         connection.Close();
     }
 
-    public List<Tag> ReadTagByVideo(int VideoId)
+    public List<Tag> ReadTagsByVideo(int VideoId)
     {
         MySqlConnection connection = new(connectionString);
-        string sql = "select * from Tag where id in "
+        string sql = "select * from Tag where Id in "
                    + "(select TagId from VideoTag where VideoId = @VideoId)";
         MySqlCommand command = new(sql, connection)
         {
@@ -67,20 +67,20 @@ public class VideoTagRepository : IVideoTagRepository
         };
         command.Parameters.AddWithValue("@VideoId", VideoId);
         
-        List<Tag> Tags = new();
+        List<Tag> tags = new();
         connection.Open();
         MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             Tag tag = new()
             {
-                Id = reader.GetByte("id"),
-                Name = reader.GetString("name")
+                Id = reader.GetInt32("Id"),
+                Name = reader.GetString("Name")
             };
-            Tags.Add(tag);
+            tags.Add(tag);
         }
         connection.Close();
-        return Tags;
+        return tags;
     }
 
     public List<VideoTag> ReadVideoTag()
@@ -100,7 +100,7 @@ public class VideoTagRepository : IVideoTagRepository
             VideoTag videoTag = new()
             {
                 VideoId = reader.GetInt32("VideoId"),
-                TagId = reader.GetByte("TagId")
+                TagId = reader.GetInt32("TagId")
             };
             videoTags.Add(videoTag);
         }
@@ -108,11 +108,11 @@ public class VideoTagRepository : IVideoTagRepository
         return videoTags;
     }
 
-    public List<Video> ReadMoviesByGenre(byte TagId)
+    public List<Video> ReadVideosByTag(int TagId)
     {
         MySqlConnection connection = new(connectionString);
-        string sql = "select * from video where id in "
-                   + "(select VideoId from videotag where TagId = @TagId)";
+        string sql = "select * from Video where Id in "
+                   + "(select VideoId from VideoTag where TagId = @TagId)";
         MySqlCommand command = new(sql, connection)
         {
             CommandType = CommandType.Text
@@ -127,46 +127,16 @@ public class VideoTagRepository : IVideoTagRepository
             Video video = new()
             {
                 Id = reader.GetInt32("id"),
-                Name = reader.GetString("Name"),
-                Description = reader.GetString("Description"),
-                UploadDate = reader.GetDateTime("UploadDate"),
+                Name = reader.GetString("name"),
+                Description = reader.GetString("description"),
+                UploadDate = reader.GetDateTime("uploadDate"),
                 Duration = reader.GetInt16("duration"),
                 Thumbnail = reader.GetString("thumbnail"),
-                videofile = reader.GetString("VideoFile")
+                VideoFile = reader.GetString("videoFile")
             };
             videos.Add(video);
         }
         connection.Close();
         return videos;
-    }
-
-    void IVideoTagRepository.Create(int VideoId, byte TagId)
-    {
-        throw new NotImplementedException();
-    }
-
-    void IVideoTagRepository.Delete(int VideoId, byte TagId)
-    {
-        throw new NotImplementedException();
-    }
-
-    void IVideoTagRepository.Delete(int VideoId)
-    {
-        throw new NotImplementedException();
-    }
-
-    List<VideoTag> IVideoTagRepository.ReadVideoTag()
-    {
-        throw new NotImplementedException();
-    }
-
-    List<Video> IVideoTagRepository.ReadMoviesByTag(byte TagId)
-    {
-        throw new NotImplementedException();
-    }
-
-    List<Tag> IVideoTagRepository.ReadTagsByVideo(int VideoId)
-    {
-        throw new NotImplementedException();
     }
 }

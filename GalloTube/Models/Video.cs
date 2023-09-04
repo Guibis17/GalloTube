@@ -2,37 +2,37 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace GalloTube.Models;
 
-[Table("Video")]
 public class Video
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Display(Name = "Nome")]
-    [Required(ErrorMessage = "O Nome é obrigatório")]
-    [StringLength(100, ErrorMessage = "O nome deve possuir no máximo 100 caracteres")]
+    [Required]
+    [StringLength(100)]
     public string Name { get; set; }
 
-    [Display(Name = "Descrição")]
-    [Required(ErrorMessage = "A descrição é obrigatória")]
-    [StringLength(8000, ErrorMessage = "A descrição deve possuir no máximo 5000 caracteres")]
+    [Required]
+    [StringLength(8000)]
     public string Description { get; set; }
 
-    [Display(Name = "Duração (em minutos)")]
-    [Required(ErrorMessage = "A Duração é obrigatória")]
+    [Required]
+    public DateTime UploadDate { get; set; }
+
+    [Required]
     public Int16 Duration { get; set; }
 
     [StringLength(200)]
-    [Display(Name = "Foto")]
     public string Thumbnail { get; set; }
 
+    [Required]
     [StringLength(200)]
-    [Display(Name = "Arquivo do vídeo")]
-    public string  videofile{ get; set; }
+    public string VideoFile { get; set; }
 
-    public DateTime UploadDate { get; set; }
+    [NotMapped]
+    public string HourDuration { get {
+        return TimeSpan.FromMinutes(Duration).ToString(@"%h'h 'mm'min'");
+    } }
 
-
-    public ICollection<VideoTag> Tag { get; set; }
+    [NotMapped]
+    public List<Tag> Tags { get; set; }
 }
